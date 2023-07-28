@@ -1,0 +1,4 @@
+*.example.py
+*.pdf
+*.backup.py
+__pycache__
