@@ -28,8 +28,8 @@ if __name__ == '__main__':
             'string': 'simple',
         },
         {
-            'pattern': '[a-z]@[A-Z]',
-            'string': 'hello@GOOGLE',
+            'pattern': '[a-z0-9]@[a-z].(com|net|org)',
+            'string': 'hello99@gmail.com',
         },
         {
             'pattern': '[A-Z]',
@@ -39,8 +39,8 @@ if __name__ == '__main__':
     
     tests_1 = [
         {
-            'pattern': '[a-z]@[A-Z]',
-            'string': 'hello@GOOGLE',
+            'pattern': '[a-z0-9]@[a-z].(com|net|org)',
+            'string': 'hello99@mail.net',
         },
     ]
 

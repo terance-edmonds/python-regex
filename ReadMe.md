@@ -1,1 +1,1 @@
-# Simple Regular Expression Algorithm
+# Simple Regular Expression Algorithm (RegEx)

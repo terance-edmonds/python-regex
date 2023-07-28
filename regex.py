@@ -18,27 +18,32 @@ def extract_set(char, exp):
     
     return [exp[:end_pos], end_pos]
 
-# match set
-def match_set(exp, txt, pos = 0):
+# match range set
+def match_range(exp, txt, pos = 0):
     if(len(txt) == 0):
         return [True, pos]
     
     # if string contains lowercase letters
     if('a-z' in exp):
         if(txt[0] >= 'a' and txt[0] <= 'z'):
-            return match_set(exp, txt[1:], pos + 1)
+            return match_range(exp, txt[1:], pos + 1)
         
     # if string contains uppercase letters
     if('A-Z' in exp):
         if(txt[0] >= 'A' and txt[0] <= 'Z'):
-            return match_set(exp, txt[1:], pos + 1)
+            return match_range(exp, txt[1:], pos + 1)
     
     # if string contains integers
     if('0-9' in exp):
         if(txt[0] >= '0' and txt[0] <= '9'):
-            return match_set(exp, txt[1:], pos + 1)
+            return match_range(exp, txt[1:], pos + 1)
     
     return [False, pos]
+
+# match options set
+def match_set(exp, txt):
+    arr = exp.replace('(', '').replace(')', '').split('|')
+    return [txt in arr]
 
 
 # find match of the expression in the text
@@ -50,10 +55,16 @@ def match_exp(exp, txt, txt_pos = 0, exp_pos = 0):
     # if match set of characters
     if(is_start_set(exp[exp_pos])):
         [set_exp, exp_pos] = extract_set(exp[exp_pos], exp)
-        [matched, txt_pos] = match_set(set_exp, txt)
-
-        if(matched):
-            return True
+        
+        if(exp[0] == '['):
+            [matched, txt_pos] = match_range(set_exp, txt)
+            if(matched):
+                return True
+            
+        elif(exp[0] == '('):
+            [matched] = match_set(set_exp, txt)
+            if(matched):
+                return True
     
     # if character matches
     if(len(exp) > exp_pos and len(txt) > txt_pos):
@@ -64,13 +75,17 @@ def match_exp(exp, txt, txt_pos = 0, exp_pos = 0):
     # if nothing matches
     return False
 
+# if valid to start
+def is_valid(exp, txt):
+    return len(txt) >= len(exp) or is_start_set(exp[0])
+
 # start matching
 def init_match(exp, txt):
     matched_count = 0
     txt_pos = 0
 
     # if the text length is greater than the expression proceed
-    if (len(txt) >= len(exp) or is_start_set(exp[0])):
+    if (is_valid(exp, txt)):
         # naive algorithm
         while txt_pos < len(txt) - 1:
             if (match_exp(exp, txt[txt_pos:])):
