@@ -3,9 +3,12 @@ from regex import RegEx
 # run each test case
 def test(num, exp, txt):
     re = RegEx(exp)
+    result = re.match(txt)
+
     print("Pattern: ", exp)
     print("String: ", txt)
-    print(f"Test {num} result: ", re.match(txt), end='\n\n')
+    print(f"Test {num} result: ", result[0])
+    print(f"Match count: ", result[1], end='\n\n')
 
 
 if __name__ == '__main__':
@@ -32,15 +35,12 @@ if __name__ == '__main__':
             'string': 'hello99@gmail.com',
         },
         {
+            'pattern': '[a-z0-9]@[a-z].(moc)',
+            'string': 'hello99@gmail.com',
+        },
+        {
             'pattern': '[A-Z]',
             'string': 'Hello',
-        },
-    ]
-    
-    tests_1 = [
-        {
-            'pattern': '[a-z0-9]@[a-z].(com|net|org)',
-            'string': 'hello99@mail.net',
         },
     ]
 

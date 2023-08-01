@@ -1,4 +1,6 @@
 *.example.py
 *.pdf
 *.backup.py
+backups
+backups/*
 __pycache__
