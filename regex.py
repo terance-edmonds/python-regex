@@ -2,6 +2,10 @@
 def is_start_set(char):
     return char == '[' or char == '('
 
+# is the character is to check starting character
+def is_start(char):
+    return char == '^'
+
 # extract set from expression
 def extract_set(char, exp):
     end_pos = 0
@@ -15,12 +19,11 @@ def extract_set(char, exp):
 
 # match range set
 def match_range(exp, txt, pos = 0):
-    if(len(txt) == 0 or len(txt) - 1 == pos):
-        if(len(txt) - 1 == pos):
-            return [True, pos - 1]
-        else:
-            return [True, pos]
-
+    if(len(txt) == 0):
+        return [True, pos]
+    elif(pos > 0 and pos >= len(txt) - 1):
+        return [True, pos - 1]
+    
     # if string contains lowercase letters
     if('a-z' in exp):
         if(txt[pos] >= 'a' and txt[pos] <= 'z'):
@@ -43,13 +46,15 @@ def match_set(exp, txt, pos = 0, end = 0):
     if(end == len(txt)):
         return [True, end]
 
+    # remove parenthesis and split by "|"
     arr = exp.replace('(', '').replace(')', '').split('|')
     char = txt[end]
-
     
+    # check if characters in txt is in the expression
     if any(char in s for s in arr):
         [matched, end] =  match_set(exp, txt, pos, end + 1)
         
+        # validate if the matched string is exact the same
         if(matched):
             for item in arr:
                 if(item == txt[pos:end]):
@@ -69,16 +74,24 @@ def match_exp(exp, txt, txt_pos = 0, exp_pos = 0):
     if (len(exp) == 0):
         return [True, txt_pos]
     
+    # if to check the starting character
+    if (is_start(exp[0]) and txt_pos == 0):
+        return match_exp(exp[1:], txt[0])
+    elif (is_start(exp[0]) and txt_pos != 0):
+        return [False, txt_pos]
+    
     # if match set of characters
     if(is_start_set(exp[exp_pos])):
         [set_exp, exp_pos] = extract_set(exp[exp_pos], exp)
         
+        # if the expression start is a range
         if(exp[0] == '['):
             [matched, txt_pos] = match_range(set_exp, txt, txt_pos)
-
+        
             if(matched):
                 return [True, txt_pos]
             
+        # if the expression start is a set
         elif(exp[0] == '('):
             [matched, txt_pos] = match_set(set_exp, txt, txt_pos, txt_pos)
 
@@ -96,28 +109,27 @@ def match_exp(exp, txt, txt_pos = 0, exp_pos = 0):
     # if nothing matches
     return [False, txt_pos]
 
-# if valid to start
-def is_valid(exp, txt):
-    return len(txt) >= len(exp) or is_start_set(exp[0])
-
 # start matching
 def init_match(exp, txt):
     matched_count = 0
     txt_pos = 0
 
-    # if the text length is greater than the expression proceed
-    if (is_valid(exp, txt)):
-        # naive algorithm
-        while txt_pos < len(txt) - 1:
-            [matched, txt_pos] = match_exp(exp, txt, txt_pos)
-            
-            if (matched):
-                matched_count += 1
-            
-            elif(is_start_set(exp[0])):
-                break
-            
-            txt_pos += 1
+    # naive algorithm
+    while txt_pos < len(txt) - 1:
+        [matched, txt_pos] = match_exp(exp, txt, txt_pos)
+        
+        # is matched increase the count
+        if (matched):
+            matched_count += 1
+        # if not matched by the set pattern then end
+        elif(is_start_set(exp[0])):
+            break
+        # if not matched by the first character then end
+        elif(is_start(exp[0])):
+            break
+        
+        # increment the text pointer position
+        txt_pos += 1
 
     # if the matched count is greater than zero
     if (matched_count > 0):

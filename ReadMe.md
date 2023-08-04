@@ -6,6 +6,7 @@ It supports:
   - Literals ( abc )
   - Ranges ( [a-z], [A-Z], [0-9], [a-zA-Z0-9] )
   - Alternatives ( a|b )
+  - Start ( ^[0-9], ^H )
   - Matching in the middle of a string
 
 ## Usage

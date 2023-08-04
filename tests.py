@@ -5,9 +5,10 @@ def test(num, exp, txt):
     re = RegEx(exp)
     result = re.match(txt)
 
+    print(f"=== Test {num} === ")
     print("Pattern: ", exp)
     print("String: ", txt)
-    print(f"Test {num} result: ", result[0])
+    print("Result: ", result[0])
     print(f"Match count: ", result[1], end='\n\n')
 
 
@@ -40,6 +41,18 @@ if __name__ == '__main__':
         },
         {
             'pattern': '[A-Z]',
+            'string': 'Hello',
+        },
+        {
+            'pattern': '^[0-9]',
+            'string': 'Hello',
+        },
+        {
+            'pattern': '^[0-9]',
+            'string': '7Hello',
+        },
+        {
+            'pattern': '^H',
             'string': 'Hello',
         },
     ]
